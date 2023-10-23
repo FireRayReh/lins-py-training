@@ -1,0 +1,36 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header2.html" %}
+</head>
+<body>
+
+<div class="container">
+    <h3>list of quiz questions and their options</h3>
+
+    <ul>
+        {% for question in quiz_question %}
+        <Li>
+            <p>{{question.id}}. {{question.question | safe}}</p>
+            <ul>
+                {% for option in question.options%}
+                <li>
+                    {{option.text}}
+                </li>
+                {% endfor %}
+            </ul>
+            <a href="{{url_for('delete_question', question_id=question.id)}}">delete</a>
+        </Li>
+        {% endfor %}
+    </ul>
+
+
+
+    <div class="container" style="width:50px;">
+    {{render_form(form)}}
+    </div>
+
+
+
+</div>
+
+</body>
+</html>

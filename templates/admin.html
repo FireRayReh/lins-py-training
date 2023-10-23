@@ -1,0 +1,48 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header2.html" %}
+</head>
+<body>
+<div class="container"><h3>
+    List of all registered participants
+    </h3>
+
+
+    <div class="transactions">
+        <h5>Number of participants: {{number_of_users}}</h5>
+
+        <table id="data-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+            </tr>
+            </thead>
+    {% for user in users:%}
+            <tbody>
+
+            <tr>
+                <td>{{user.full_name}}</td> <span class="span"></span>
+                <td>{{user.email}}</td> <span class="span"></span>
+                <td>{{user.phone_number}}</td> <span class="span"></span>
+            </tr>
+            </tbody>
+
+            {% endfor %}
+
+        </table>
+        {{render_form(export)}}
+
+
+    </div>
+    <div>
+        <a href="{{url_for('delete_all_users')}}">Delete all Registered Participants</a>
+    </div>
+
+
+</div>
+<footer style="margin-top:100px;">
+
+</footer>
+</body>
+</html>

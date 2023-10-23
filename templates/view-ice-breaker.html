@@ -1,0 +1,21 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header2.html" %}
+</head>
+<body>
+<div class="container">
+    <h3>
+    List of all ice breaker question
+    </h3>
+
+    {% for question in ice_breaker: %}
+    <p>{{question.id}}. {{question.question | safe}}   <a href="{{url_for('delete_icebreaker', question_id=question.id)}}">delete</a></p>
+    {% endfor %}
+
+
+    <div class="container" style="width:50px;">
+    {{render_form(form)}}
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LINS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 220px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+  </style>
+  </head>
+  <body>
+    <div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#"><img src="static/image/logo.png" height="60px" width="180px"></use></svg>
+        <span class="fs-4"></span>
+      </a>
+
+      <ul class="nav nav-pills">
+        <li class="nav-item"><a href="{{url_for('home')}}" class="nav-link active" aria-current="page">Home</a></li>
+        <li class="nav-item"><a href="{{url_for('icebreaker')}}" class="nav-link">Ice Breaker</a></li>
+        <li class="nav-item"><a href="{{url_for('quiz')}}" class="nav-link">Quiz</a></li>
+
+        <li class="nav-item"><div class="dropdown"><span><a href="#" class="nav-link">Forms
+        </a></span>
+         <div class="dropdown-content">
+            <a href="{{url_for('facilitators_rating')}}">Facilitators Evaluation</a>
+            <a href="{{url_for('course_evaluation')}}">Course Evaluation</a>
+        </div></div>
+        </li>
+        <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+      </ul>
+    </header>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  </body>
+</html>

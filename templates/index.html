@@ -1,0 +1,38 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header.html" %}
+<style>
+    body {
+  font-family: Verdana, sans-serif;
+}
+</style>
+<body>
+
+    <div class="container">
+
+        {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash" style="color:red;">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+
+        <h1>Lins Consult Ltd </h1>
+        <h3>Welcome to this training program facilitated by Lins Consult Ltd<br/><br/>Title: Hazards Identification and Risk Mitigation<br/>Date: 30th October - 3rd November, 2023<br>Venue: Ivy Hotel Ikeja, Lagos</h3>
+
+
+        <div style="width:500px; margin-top:50px;"><h5 style="color:orange">Kindly fill out this brief registration form</h5>
+            {{render_form(form)}}
+        </div>
+
+    </div>
+
+
+<footer style="margin-top:100px;">
+
+</footer>
+
+
+</body>
+</html>

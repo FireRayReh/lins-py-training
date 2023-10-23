@@ -1,0 +1,10 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header.html" %}
+<body>
+<div class="container">
+
+<h1>Question Number {{question.id}}</h1>
+    <h3>{{question.question | safe}}</h3>
+</div>
+</body>
+</html>
