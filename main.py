@@ -4,12 +4,12 @@ import tempfile
 
 from flask import Flask, abort, render_template, redirect, url_for, flash, request, session, Response, jsonify
 from flask_bootstrap import Bootstrap5
-from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user
+# from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor, CKEditorField
 from forms import IceBreaker, QuizQuestion, PickIcebreaker, Registration, DeleteAllQuestion, Export, QuizReg, HomeQuiz, \
     FacilitatorsRating
-import pandas as pd
+# import pandas as pd
 
 #
 
