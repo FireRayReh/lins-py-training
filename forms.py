@@ -31,7 +31,7 @@ class PickIcebreaker(FlaskForm):
 class Registration(FlaskForm):
     """asks user for their information"""
     full_name = StringField("Full Name", validators=[DataRequired()])
-    email = StringField("Email", validators=[Email(), DataRequired()])
+    email = StringField("Email", validators=[DataRequired()])
     phone_number = StringField("Phone Number", validators=[DataRequired()],
                                render_kw={"placeholder": "Whatsapp Number"})
     save = SubmitField("Save")
