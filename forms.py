@@ -45,6 +45,14 @@ class QuizReg(FlaskForm):
     submit = SubmitField("Show Quiz")
 
 
+class Formsreg(FlaskForm):
+    phone_number = StringField("Phone Number", validators=[DataRequired()], render_kw={"placeholder": "Enter the "
+                                                                                                      "number you "
+                                                                                                      "registered "
+                                                                                                      "with"})
+    submit = SubmitField("Show Survey")
+
+
 class Export(FlaskForm):
     export = SubmitField("Export")
 

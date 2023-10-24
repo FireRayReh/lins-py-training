@@ -8,7 +8,7 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor, CKEditorField
 from forms import IceBreaker, QuizQuestion, PickIcebreaker, Registration, DeleteAllQuestion, Export, QuizReg, HomeQuiz, \
-    FacilitatorsRating
+    FacilitatorsRating, Formsreg
 # import pandas as pd
 
 #
@@ -176,6 +176,7 @@ def add_icebreaker():
 
 @app.route("/view-quiz-question", methods=["GET", "POST"])
 def view_quiz_question():
+    """displays all the quiz questions for admin to see, displays delete and delete all buttons"""
     form = DeleteAllQuestion()
     if form.validate_on_submit():
         return redirect(url_for("delete_all"))
@@ -185,6 +186,7 @@ def view_quiz_question():
 
 @app.route("/view-ice-breaker", methods=["GET", "POST"])
 def view_ice_breaker():
+    """displays all icebreaker questions for admin and also delete and delete all button """
     form = DeleteAllQuestion()
     if form.validate_on_submit():
         return redirect(url_for("delete_all_icebreaker"))
@@ -195,6 +197,7 @@ def view_ice_breaker():
 
 @app.route("/delete/all-question")
 def delete_all():
+    """deletes all the quiz questions from the database"""
     db.session.query(Icebreakerdb).delete()
     db.session.commit()
     return redirect(url_for("view_quiz_question"))
@@ -202,6 +205,7 @@ def delete_all():
 
 @app.route("/delete/all-icebreaker")
 def delete_all_icebreaker():
+    """deletes all the icebreaker questions from the database"""
     db.session.query(QuizDb).delete()
     db.session.query(Option).delete()
     db.session.commit()
@@ -231,6 +235,7 @@ def delete_icebreaker(question_id):
 
 @app.route("/delete-all-users")
 def delete_all_users():
+    """deletes all the users from the database"""
     db.session.query(Users).delete()
     db.session.commit()
 
@@ -324,6 +329,7 @@ score = 0
 
 @app.route("/quiz/question", methods=["GET", "POST"])
 def show_quiz():
+    """shows the individual quiz question and their option, checks the user answer against the correct answer and keeps score count"""
     global question_no, score
     name = session.get("name")
     question_list = QuizDb.query.all()
@@ -356,6 +362,7 @@ def show_quiz():
 
 @app.route("/quiz-result", methods=['GET', 'POST'])
 def quiz_result():
+    """displays the quiz result"""
     global score
     question_list = QuizDb.query.all()
     name = session.get("name")
@@ -363,14 +370,50 @@ def quiz_result():
     return render_template("quiz-result.html", name=name, score=score, total=len(question_list))
 
 
+@app.route("/forms/facilitators", methods=["GET", "POST"])
+def forms_facilitator():
+    """asks user to enter their phone number, checks if they are registered before allowing them to fill survey"""
+    form = Formsreg()
+    if form.validate_on_submit():
+        number = form.phone_number.data
+        user = db.session.execute(db.Select(Users).where(Users.phone_number == number)).scalar()
+
+        if user:
+            return redirect(url_for("facilitators_rating"))
+        else:
+            flash("Please make sure you have registered")
+            return redirect(url_for("forms_facilitator"))
+
+    return render_template("forms-facilitator.html", form=form)
+
+
+@app.route("/forms/course-evaluation", methods=["GET", "POST"])
+def forms_course_evaluation():
+    """asks user to enter their phone number, checks if they are registered before allowing them to fill survey"""
+    form = Formsreg()
+    if form.validate_on_submit():
+        number = form.phone_number.data
+        user = db.session.execute(db.Select(Users).where(Users.phone_number == number)).scalar()
+
+        if user:
+            return redirect(url_for("course_evaluation"))
+        else:
+            flash("Please make sure you have registered")
+            return redirect(url_for("forms_course_evaluation"))
+
+    return render_template("forms-course-evaluation.html", form=form)
+
+
 @app.route("/facilitators-rating")
 def facilitators_rating():
+    """displays a Google form for the survey"""
     form = FacilitatorsRating()
     return render_template("facilitators-rating.html", form=form)
 
 
 @app.route("/course-evaluation")
 def course_evaluation():
+    """displays a Google form for the survey"""
     return render_template("course-evaluation.html")
 
 
