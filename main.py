@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor, CKEditorField
 from forms import IceBreaker, QuizQuestion, PickIcebreaker, Registration, DeleteAllQuestion, Export, QuizReg, HomeQuiz, \
     FacilitatorsRating, Formsreg
+
 # import pandas as pd
 
 #
@@ -241,6 +242,7 @@ def delete_all_users():
 
     return redirect(url_for("admin"))
 
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     """Home page"""
@@ -415,7 +417,6 @@ def facilitators_rating():
 def course_evaluation():
     """displays a Google form for the survey"""
     return render_template("course-evaluation.html")
-
 
 
 if __name__ == "__main__":
