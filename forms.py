@@ -25,6 +25,10 @@ class QuizQuestion(FlaskForm):
 
 
 class PickIcebreaker(FlaskForm):
+    number = StringField("Phone number", validators=[DataRequired()], render_kw={"placeholder": "Enter the "
+                                                                                                "number you "
+                                                                                                "registered "
+                                                                                                "with"})
     pick = SubmitField("Pick Question")
 
 
