@@ -8,7 +8,7 @@ from flask_ckeditor import CKEditorField
 class IceBreaker(FlaskForm):
     """admin form to adds ice breaker questions """
     question_number = StringField("Question Number", validators=[DataRequired()], default=1)
-    question = TextAreaField("Question ", validators=[DataRequired()])
+    question = CKEditorField("Question ", validators=[DataRequired()])
     Save = SubmitField("Save")
 
 
