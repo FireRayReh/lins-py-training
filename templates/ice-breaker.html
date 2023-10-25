@@ -2,6 +2,16 @@
 {% include "header.html" %}
 <body>
 <div class="container" style="width:500px; margin:50px;">
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash" style="color:red;">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+
     <h1>Pick a Question</h1>
     {{render_form(form)}}
 

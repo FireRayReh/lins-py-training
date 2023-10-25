@@ -5,6 +5,10 @@ from wtforms.validators import DataRequired, URL, Email, InputRequired
 from flask_ckeditor import CKEditorField
 
 
+class AddSuccess(FlaskForm):
+    go_back = SubmitField("Go Back")
+
+
 class IceBreaker(FlaskForm):
     """admin form to adds ice breaker questions """
     question_number = StringField("Question Number", validators=[DataRequired()], default=1)
