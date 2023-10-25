@@ -275,7 +275,11 @@ def icebreaker():
     """displays a pick question button and asks the user to pick question"""
     form = PickIcebreaker()
     if form.validate_on_submit():
-        return redirect(url_for("icebreaker_question"))
+        user = db.session.execute(db.Select(Users).where(Users.phone_number == form.number.data))
+        if user:
+            return redirect(url_for("icebreaker_question"))
+        else:
+            flash("Please make sure you have registered")
 
     return render_template("ice-breaker.html", form=form)
 
