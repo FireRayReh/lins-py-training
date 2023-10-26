@@ -5,6 +5,10 @@ from wtforms.validators import DataRequired, URL, Email, InputRequired
 from flask_ckeditor import CKEditorField
 
 
+class DeletePicked(FlaskForm):
+    delete = SubmitField("Delete")
+
+
 class AddSuccess(FlaskForm):
     go_back = SubmitField("Go Back")
 

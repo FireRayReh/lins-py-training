@@ -1,0 +1,15 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% include "header2.html" %}
+
+<body>
+<div class="container">
+        <h3>Delete all participant who have picked a question from the picked icebreaker db </h3>
+    <h5>Number of users who have picked icebreaker</h5>
+    {{count}}
+    {% for user in users:%}
+    {{user.phone_number}}
+    {% endfor %}
+    {{render_form(form)}}
+</div>
+</body>
+</html>

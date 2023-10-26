@@ -8,7 +8,7 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor, CKEditorField
 from forms import IceBreaker, QuizQuestion, PickIcebreaker, Registration, DeleteAllQuestion, Export, QuizReg, HomeQuiz, \
-    FacilitatorsRating, Formsreg, AddSuccess
+    FacilitatorsRating, Formsreg, AddSuccess, DeletePicked
 
 import pandas as pd
 
@@ -24,6 +24,7 @@ ckeditor = CKEditor(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///lins.db"
 db = SQLAlchemy()
 db.init_app(app)
+
 
 # Configure Flask-Login
 # login_manager = LoginManager()
@@ -274,6 +275,19 @@ def delete_all_users():
     db.session.commit()
 
     return redirect(url_for("admin"))
+
+
+@app.route("/others", methods=["GET", "POST"])
+def others():
+    form = DeletePicked()
+    users = db.session.execute(db.Select(PickedUsersDb)).scalars().all()
+
+    if form.validate_on_submit():
+        db.session.query(PickedUsersDb).delete()
+        db.session.commit()
+        return redirect(url_for("others"))
+
+    return render_template("admin-other.html", form=form, users=users, count=len(users))
 
 
 @app.route("/", methods=["GET", "POST"])
