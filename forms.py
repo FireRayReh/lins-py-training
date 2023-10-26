@@ -10,7 +10,7 @@ class AddSuccess(FlaskForm):
 
 
 class IceBreaker(FlaskForm):
-    """admin form to adds ice breaker questions """
+    """admin form to add icebreaker questions """
     question_number = StringField("Question Number", validators=[DataRequired()], default=1)
     question = CKEditorField("Question ", validators=[DataRequired()])
     Save = SubmitField("Save")

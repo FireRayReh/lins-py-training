@@ -8,9 +8,9 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor, CKEditorField
 from forms import IceBreaker, QuizQuestion, PickIcebreaker, Registration, DeleteAllQuestion, Export, QuizReg, HomeQuiz, \
-    FacilitatorsRating, Formsreg
+    FacilitatorsRating, Formsreg, AddSuccess
 
-# import pandas as pd
+import pandas as pd
 
 #
 
@@ -24,6 +24,15 @@ ckeditor = CKEditor(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///lins.db"
 db = SQLAlchemy()
 db.init_app(app)
+
+# Configure Flask-Login
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+#
+#
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return db.get_or_404(Users, user_id)
 
 
 class Icebreakerdb(db.Model):
@@ -55,6 +64,12 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
+    phone_number = db.Column(db.String(255), nullable=False)
+
+
+class PickedUsersDb(db.Model):
+    __tablename__ = "pickedusers"
+    id = db.Column(db.Integer, primary_key=True)
     phone_number = db.Column(db.String(255), nullable=False)
 
 
@@ -142,14 +157,23 @@ def add_question():
             #     db.session.add(new_options)
             #     db.session.commit()
 
-        return "You have successful added a new question"
+        return redirect(url_for("question_success"))
 
     return render_template("add-question.html", form=form)
 
 
+@app.route("/question_success", methods=["POST", "GET"])
+def question_success():
+    form = AddSuccess()
+    if form.validate_on_submit():
+        return redirect(url_for("add_question"))
+
+    return render_template("icebreaker-success.html", form=form)
+
+
 @app.route("/admin/icebreaker", methods=["GET", "POST"])
 def add_icebreaker():
-    """admin operator, can add question to the ice breaker database"""
+    """admin operator, can add question to the icebreaker database"""
     form = IceBreaker()
     if form.validate_on_submit():
 
@@ -164,15 +188,24 @@ def add_icebreaker():
             )
             db.session.add(new_question)
             db.session.commit()
-            return "You have successfully added a new question"
+            return redirect(url_for("icebreaker_success"))
 
         else:
             existing_question.question = question
             db.session.commit()
 
-            return "You Have Updated a Question Successfully"
+            return redirect(url_for("icebreaker_success"))
 
     return render_template("add-icebreaker.html", form=form)
+
+
+@app.route("/icebreaker_success", methods=["POST", "GET"])
+def icebreaker_success():
+    form = AddSuccess()
+    if form.validate_on_submit():
+        return redirect(url_for("add_icebreaker"))
+
+    return render_template("icebreaker-success.html", form=form)
 
 
 @app.route("/view-quiz-question", methods=["GET", "POST"])
@@ -275,9 +308,16 @@ def icebreaker():
     """displays a pick question button and asks the user to pick question"""
     form = PickIcebreaker()
     if form.validate_on_submit():
+
         user = db.session.execute(db.Select(Users).where(Users.phone_number == form.number.data)).scalar()
         if user:
-            return redirect(url_for("icebreaker_question"))
+            picked = db.session.execute(
+                db.Select(PickedUsersDb).where(PickedUsersDb.phone_number == form.number.data)).scalar()
+            if picked:
+                flash("You have already picked a question")
+                return redirect(url_for("icebreaker"))
+            else:
+                return redirect(url_for("icebreaker_question", user=form.number.data))
         else:
             flash("Please make sure you have registered")
             return redirect(url_for("icebreaker"))
@@ -285,19 +325,28 @@ def icebreaker():
     return render_template("ice-breaker.html", form=form)
 
 
-@app.route("/icebreaker/question", methods=["GET", "POST"])
-def icebreaker_question():
+@app.route("/icebreaker/question/<user>", methods=["GET", "POST"])
+def icebreaker_question(user):
     """displays a random icebreaker question and then deletes the question from the question database"""
+    picked = db.session.execute(db.Select(PickedUsersDb).where(PickedUsersDb.phone_number == user)).scalar()
+    if picked:
+        return "<h1>You have already picked a question</h1>"
     try:
         questions = db.session.execute(db.Select(Icebreakerdb)).scalars().all()
         random_question = random.choice(questions)
         db.session.delete(random_question)
         db.session.commit()
 
+        new_picked = PickedUsersDb(
+            phone_number=user,
+        )
+        db.session.add(new_picked)
+        db.session.commit()
+
         return render_template("icebreaker-question.html", question=random_question)
     except IndexError:
         # Handle the IndexError gracefully
-        return "<h1>Sorry no Questions have been set yet</h1>"
+        return "<h1>Sorry no Questions yet</h1>"
 
 
 @app.route("/quiz", methods=["GET", "POST"])
@@ -364,7 +413,7 @@ def show_quiz():
         return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1),
                                total=len(question_list))
     else:
-        return "<h1>Close the page and start again</h1>"
+        return "<h1>No Questions Yet.c</h1>"
 
 
 @app.route("/quiz-result", methods=['GET', 'POST'])
@@ -425,4 +474,4 @@ def course_evaluation():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False, port=5002)
+    app.run(debug=True, use_reloader=False, port=5004)
