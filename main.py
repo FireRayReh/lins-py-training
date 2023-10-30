@@ -233,7 +233,7 @@ def view_ice_breaker():
 @app.route("/delete/all-question")
 def delete_all():
     """deletes all the quiz questions from the database"""
-    db.session.query(Icebreakerdb).delete()
+    db.session.query(QuizDb).delete()
     db.session.commit()
     return redirect(url_for("view_quiz_question"))
 
