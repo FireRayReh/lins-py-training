@@ -1,6 +1,7 @@
 import csv
 import random
 import tempfile
+import os
 
 from flask import Flask, abort, render_template, redirect, url_for, flash, request, session, Response, jsonify
 from flask_bootstrap import Bootstrap5
@@ -21,7 +22,7 @@ app.config['SECRET_KEY'] = 'secretkey'
 ckeditor = CKEditor(app)
 
 """db connecting"""
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://linsuser:VXqutPQYzXS7ov676VcON6GVkBsU8fut@dpg-ckvvheramefc73cadak0-a.oregon-postgres.render.com/lins_test_db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("db_credentials")
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -214,7 +215,7 @@ def view_quiz_question():
     """displays all the quiz questions for admin to see, displays delete and delete all buttons"""
     form = DeleteAllQuestion()
     if form.validate_on_submit():
-        return redirect(url_for("delete_all"))
+        return redirect(url_for("delete_all_questions"))
     quiz_question = db.session.execute(db.select(QuizDb)).scalars().all()
     return render_template("view-quiz-question.html", quiz_question=quiz_question, form=form)
 
@@ -231,19 +232,19 @@ def view_ice_breaker():
 
 
 @app.route("/delete/all-question")
-def delete_all():
+def delete_all_questions():
     """deletes all the quiz questions from the database"""
     db.session.query(QuizDb).delete()
+    db.session.query(Option).delete()
     db.session.commit()
     return redirect(url_for("view_quiz_question"))
-
 
 @app.route("/delete/all-icebreaker")
 def delete_all_icebreaker():
     """deletes all the icebreaker questions from the database"""
     db.session.query(Icebreakerdb).delete()
     db.session.commit()
-    return redirect(url_for("view_quiz_question"))
+    return redirect(url_for("view_ice_breaker"))
 
 
 @app.route("/delete/<int:question_id>")
@@ -408,12 +409,9 @@ def show_quiz():
         correct_answer = question_list[question_no].answer
         # print(user_answer)
         # print(correct_answer)
-
         question_no += 1
-
         if user_answer == correct_answer:
             score += 1
-
         if question_no < len(question_list):
             return redirect(url_for("show_quiz"))
         else:
@@ -421,12 +419,16 @@ def show_quiz():
 
     if question_no < len(question_list):
         current_question = question_list[question_no]
-        # print(current_question.options.text)
+    #     # print(current_question.options.text)
 
         return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1),
                                total=len(question_list))
     else:
-        return "<h1>No Questions Yet.c</h1>"
+        question_no = 0
+        score = 0
+        current_question = question_list[question_no]
+        return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1),
+                               total=len(question_list))
 
 
 @app.route("/quiz-result", methods=['GET', 'POST'])
