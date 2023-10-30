@@ -21,7 +21,7 @@ app.config['SECRET_KEY'] = 'secretkey'
 ckeditor = CKEditor(app)
 
 """db connecting"""
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///lins.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://linsuser:VXqutPQYzXS7ov676VcON6GVkBsU8fut@dpg-ckvvheramefc73cadak0-a.oregon-postgres.render.com/lins_test_db"
 db = SQLAlchemy()
 db.init_app(app)
 
