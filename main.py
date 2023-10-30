@@ -214,7 +214,7 @@ def view_quiz_question():
     """displays all the quiz questions for admin to see, displays delete and delete all buttons"""
     form = DeleteAllQuestion()
     if form.validate_on_submit():
-        return redirect(url_for("delete_all"))
+        return redirect(url_for("delete_all_quiz"))
     quiz_question = db.session.execute(db.select(QuizDb)).scalars().all()
     return render_template("view-quiz-question.html", quiz_question=quiz_question, form=form)
 
@@ -231,16 +231,16 @@ def view_ice_breaker():
 
 
 @app.route("/delete/all-question")
-def delete_all():
-    """deletes all the quiz questions from the database"""
+def delete_all_icebreaker():
+    """deletes all the icebreaker questions from the database"""
     db.session.query(Icebreakerdb).delete()
     db.session.commit()
     return redirect(url_for("view_quiz_question"))
 
 
 @app.route("/delete/all-icebreaker")
-def delete_all_icebreaker():
-    """deletes all the icebreaker questions from the database"""
+def delete_all_quiz():
+    """deletes all the quiz questions from the database"""
     db.session.query(QuizDb).delete()
     db.session.query(Option).delete()
     db.session.commit()
@@ -399,7 +399,8 @@ score = 0
 
 @app.route("/quiz/question", methods=["GET", "POST"])
 def show_quiz():
-    """shows the individual quiz question and their option, checks the user answer against the correct answer and keeps score count"""
+    """shows the individual quiz question and their option, checks the user answer against the correct answer and
+    keeps score count, reset the question number and score to zero to handle list index error """
     global question_no, score
     name = session.get("name")
     question_list = QuizDb.query.all()
@@ -422,12 +423,16 @@ def show_quiz():
 
     if question_no < len(question_list):
         current_question = question_list[question_no]
-        # print(current_question.options.text)
+    #     # print(current_question.options.text)
 
         return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1),
                                total=len(question_list))
     else:
-        return "<h1>No Questions Yet.c</h1>"
+        question_no = 0
+        score = 0
+        current_question = question_list[question_no]
+        return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1),
+                               total=len(question_list))
 
 
 @app.route("/quiz-result", methods=['GET', 'POST'])
