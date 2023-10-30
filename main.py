@@ -22,7 +22,7 @@ app.config['SECRET_KEY'] = 'secretkey'
 ckeditor = CKEditor(app)
 
 """db connecting"""
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("db_credentials")
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///lins.db"
 db = SQLAlchemy()
 db.init_app(app)
 
