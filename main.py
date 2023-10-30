@@ -22,7 +22,8 @@ app.config['SECRET_KEY'] = 'secretkey'
 ckeditor = CKEditor(app)
 
 """db connecting"""
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///lins.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('db_credentials')
+
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -405,7 +406,7 @@ def show_quiz():
     global question_no, score
     name = session.get("name")
     question_list = QuizDb.query.all()
-    #
+    
     if request.method == "POST":
         user_answer = request.form.get("choice")
         correct_answer = question_list[question_no].answer
