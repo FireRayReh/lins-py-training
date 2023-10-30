@@ -247,6 +247,7 @@ def delete_all_icebreaker():
     return redirect(url_for("view_ice_breaker"))
 
 
+
 @app.route("/delete/<int:question_id>")
 def delete_question(question_id):
     """deletes single question from the db"""
@@ -399,7 +400,8 @@ score = 0
 
 @app.route("/quiz/question", methods=["GET", "POST"])
 def show_quiz():
-    """shows the individual quiz question and their option, checks the user answer against the correct answer and keeps score count"""
+    """shows the individual quiz question and their option, checks the user answer against the correct answer and
+    keeps score count, reset the question number and score to zero to handle list index error """
     global question_no, score
     name = session.get("name")
     question_list = QuizDb.query.all()
