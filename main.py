@@ -402,6 +402,7 @@ score = 0
 @app.route("/quiz/question", methods=["GET", "POST"])
 def show_quiz():
     """shows the individual quiz question and their option, checks the user answer against the correct answer and
+    keeps score count, reset the question number and score to zero to handle list index error """
     global question_no, score
     name = session.get("name")
     question_list = QuizDb.query.all()
@@ -418,15 +419,17 @@ def show_quiz():
             else:
                 return redirect(url_for("quiz_result"))
 
-    if question_no < len(question_list):
-        current_question = question_list[question_no]
-        return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1), total=len(question_list))
+        if question_no < len(question_list):
+            current_question = question_list[question_no]
+            return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1),
+                                   total=len(question_list))
     else:
         question_no = 0
         score = 0
         if question_list:
             current_question = question_list[question_no]
-            return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1), total=len(question_list))
+            return render_template("quiz-question.html", question=current_question, name=name, index=(question_no + 1),
+                                   total=len(question_list))
         else:
             # Handle the case when question_list is empty
             return redirect(url_for("quiz_result"))
