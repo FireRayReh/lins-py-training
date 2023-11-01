@@ -23,6 +23,8 @@ ckeditor = CKEditor(app)
 
 """db connecting"""
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('db_credentials')
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
+
 
 db = SQLAlchemy()
 db.init_app(app)
@@ -235,8 +237,8 @@ def view_ice_breaker():
 @app.route("/delete/all-question")
 def delete_all_questions():
     """deletes all the quiz questions from the database"""
-    db.session.query(QuizDb).delete()
     db.session.query(Option).delete()
+    db.session.query(QuizDb).delete()
     db.session.commit()
     return redirect(url_for("view_quiz_question"))
 
@@ -253,7 +255,8 @@ def delete_all_icebreaker():
 def delete_question(question_id):
     """deletes single question from the db"""
     question = db.session.execute(db.Select(QuizDb).where(QuizDb.id == question_id)).scalar()
-
+    option = db.session.execute(db.Select(Option).where(Option.question_id == question_id)).scalar()
+    db.session.delete(option)
     db.session.delete(question)
     db.session.commit()
 
